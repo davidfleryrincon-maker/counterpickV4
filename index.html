@@ -431,11 +431,10 @@ async function buscarCounter() {
   const enemigoFinal = identificarHeroe(inputEnemigo);
   const pool = userPool[linea] || [];
   
-  // URL de tu API en Vercel
+  // URL directa de tu API en Vercel
   const VERCEL_URL = "https://mlbb-counter-api-five.vercel.app"; 
 
-  // Notificación de carga
-  document.getElementById('poolResult').innerHTML = "<p style='color:var(--muted); font-size:0.85rem;'>Evaluando tu pool...</p>";
+  document.getElementById('poolResult').innerHTML = "<p style='color:var(--muted); font-size:0.85rem;'>Analizando matchup...</p>";
   document.getElementById('generalResult').innerHTML = "<p style='color:var(--accent); font-size:0.9rem;'>Consultando counters en vivo en MLBB Hub...</p>";
   document.getElementById('resultadosCounter').style.display = "block";
 
@@ -444,32 +443,30 @@ async function buscarCounter() {
     : "";
 
   try {
-    const response = await fetch(`${VERCEL_URL}/api/counter?hero=${encodeURIComponent(enemigoFinal)}`);
+    const response = await fetch(`${VERCEL_URL}/?hero=${encodeURIComponent(enemigoFinal)}`);
     const data = await response.json();
 
     const apiCounters = data.counters || [];
 
-    // --- BLOQUE 2: MEJOR OPCIÓN GENERAL (MLBB HUB EN VIVO) ---
+    // --- BLOQUE 2: MEJOR OPCIÓN GENERAL ---
     if (apiCounters.length > 0) {
       let htmlBloque2 = "";
       apiCounters.forEach((c, i) => {
         htmlBloque2 += `
           <div class="item-badge">
-            ${i + 1}. <strong>${c.name}</strong> - Win Rate/Ventaja: ${c.winRate}
+            ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
           </div>`;
       });
       document.getElementById('generalResult').innerHTML = htmlBloque2;
     } else {
       document.getElementById('generalResult').innerHTML = `
-        <p class="empty-msg">No se extrajeron datos automáticos, consulta la fuente directa:</p>
-        <a href="${data.source || 'https://mlbbhub.com/counter/' + enemigoFinal}" target="_blank" style="color:var(--accent); font-size:0.85rem; display:inline-block; margin-top:8px;">Ver en MLBB Hub &rarr;</a>`;
+        <p style="color:var(--gold); font-size:0.85rem;">No se encontraron counters específicos registrados para <strong>${enemigoFinal}</strong> en la base de datos pública.</p>`;
     }
 
-    // --- BLOQUE 1: MEJOR OPCIÓN DE TU POOL (FILTRANDO DESDE MLBB HUB) ---
+    // --- BLOQUE 1: MEJOR OPCIÓN DE TU POOL ---
     if (pool.length === 0) {
       document.getElementById('poolResult').innerHTML = `<p class="empty-msg">${txt.emptyPool}</p>`;
     } else {
-      // Cruzar el pool del usuario con la lista en vivo devuelta por la API
       const poolCoincidentes = [];
 
       pool.forEach(miHeroe => {
@@ -481,29 +478,27 @@ async function buscarCounter() {
 
       if (poolCoincidentes.length > 0) {
         let htmlBloque1 = `${fuzzyNotice}`;
-        poolCoincidentes.forEach((item, idx) => {
+        poolCoincidentes.forEach((item) => {
           htmlBloque1 += `
             <div class="item-badge" style="border-left-color:var(--success);">
               🥇 <strong>${item.name}</strong> (Ventaja en MLBB Hub: ${item.winRate})
             </div>`;
         });
-        htmlBloque1 += `<p style="margin-top:6px; font-size:0.85rem; color:var(--success);">¡Confirmado! Este personaje de tu pool tiene ventaja directa según el meta actual.</p>`;
+        htmlBloque1 += `<p style="margin-top:6px; font-size:0.85rem; color:var(--success);">¡Opción recomendada! Este personaje de tu pool figura en el meta actual contra ${enemigoFinal}.</p>`;
         document.getElementById('poolResult').innerHTML = htmlBloque1;
       } else {
-        // Fallback: Si ningún héroe del pool del usuario figura en el Top Counter en vivo
         document.getElementById('poolResult').innerHTML = `
           ${fuzzyNotice}
-          <p class="empty-msg">${txt.noMatchInPool} <strong>${enemigoFinal}</strong>.</p>
-          <div style="margin-top:8px;">
-            <span style="color:var(--muted); font-size:0.85rem;">Tu mejor alternativa por comodidad:</span><br>
-            <strong style="color:var(--gold); font-size:1.1rem;">${pool[0]}</strong>
+          <div style="margin-top:4px;">
+            <span style="color:var(--muted); font-size:0.85rem;">Ningún personaje de tu pool tiene un counter directo registrado en MLBB Hub para esta línea. Tu mejor opción principal guardada es:</span><br>
+            <strong style="color:var(--gold); font-size:1.1rem; display:inline-block; margin-top:6px;">${pool[0]}</strong>
           </div>`;
       }
     }
 
   } catch (err) {
-    document.getElementById('generalResult').innerHTML = `<p style="color:var(--danger); font-size:0.85rem;">Error al conectar con la API.</p>`;
-    document.getElementById('poolResult').innerHTML = `<p style="color:var(--danger); font-size:0.85rem;">No se pudo validar tu pool en vivo.</p>`;
+    document.getElementById('generalResult').innerHTML = `<p style="color:var(--danger); font-size:0.85rem;">Error al conectar con el servidor de Vercel. Verifica tu conexión o el estado del despliegue.</p>`;
+    document.getElementById('poolResult').innerHTML = `<p style="color:var(--danger); font-size:0.85rem;">No se pudo procesar la consulta.</p>`;
   }
 }
 
