@@ -285,6 +285,35 @@ const HERO_DATABASE = [
   "Novaria", "Arlott", "Ixia", "Nolan", "Cici", "Chip", "Zhuxin", "Lukas", "Suyu", "Suyou", "Kaela", "Calea"
 ];
 
+// DICCIONARIO DE LÍNEAS HABITUALES POR HÉROE
+const HERO_LANES = {
+  exp: [
+    "Balmond", "Zilong", "Chou", "Sun", "Alpha", "Ruby", "Hilda", "Lapu-Lapu", "Argus", "Jawhead",
+    "Martis", "Uranus", "Aldous", "Leomord", "Thamuz", "Minsitthar", "Badang", "Guinevere", "Esmeralda",
+    "Terizla", "X.Borg", "Dyrroth", "Masha", "Silvanna", "Yu Zhong", "Benedetta", "Khaleed", "Barats",
+    "Paquito", "Gloo", "Phoveus", "Aulus", "Edith", "Yin", "Julian", "Fredrinn", "Joy", "Arlott",
+    "Cici", "Lukas", "Suyu", "Suyou"
+  ],
+  mid: [
+    "Alice", "Nana", "Eudora", "Gord", "Kagura", "Cyclops", "Aurora", "Vexana", "Odette", "Pharsa",
+    "Valir", "Chang'e", "Vale", "Lunox", "Harith", "Lylia", "Cecilion", "Luo Yi", "Yve", "Valentina",
+    "Xavier", "Novaria", "Zhuxin"
+  ],
+  gold: [
+    "Miya", "Bruno", "Clint", "Layla", "Moscov", "Irithel", "Lesley", "Hanabi", "Claude", "Kimmy",
+    "Granger", "Wanwan", "Brody", "Natan", "Melissa", "Ixia", "Popol and Kupa"
+  ],
+  jungle: [
+    "Saber", "Alucard", "Fanny", "Hayabusa", "Freya", "Yi Sun-shin", "Harley", "Lancelot", "Helcurt",
+    "Gusion", "Hanzo", "Ling", "Baxia", "Aamon", "Nolan", "Barats", "Martis", "Alpha", "Julian"
+  ],
+  roam: [
+    "Tigreal", "Akai", "Franco", "Rafaela", "Minotauro", "Lolita", "Natalia", "Johnson", "Estes",
+    "Grock", "Diggie", "Hylos", "Angela", "Kaja", "Selena", "Belerick", "Khufra", "Carmilla",
+    "Atlas", "Mathilda", "Chip"
+  ]
+};
+
 // DICCIONARIOS DE IDIOMA
 const i18n = {
   es: {
@@ -300,7 +329,6 @@ const i18n = {
     block2Title: "🌍 BLOQUE 2: Mejor Opción General (MLBB Hub)",
     btnReset: "🔄 Analizar Nueva Partida",
     emptyPool: "Tu pool está vacío para esta línea. Agrega héroes arriba.",
-    noMatchInPool: "Ningún héroe de tu pool figura en el Top Counter de MLBB Hub para ",
     fuzzyFound: "Interpretado como: ",
     enterEnemy: "Por favor, ingresa el nombre del héroe enemigo."
   },
@@ -317,7 +345,6 @@ const i18n = {
     block2Title: "🌍 BLOCK 2: Best General Option (MLBB Hub)",
     btnReset: "🔄 Analyze New Matchup",
     emptyPool: "Your pool is empty for this lane. Add heroes above.",
-    noMatchInPool: "No heroes from your pool are listed in MLBB Hub Top Counters for ",
     fuzzyFound: "Interpreted as: ",
     enterEnemy: "Please enter the enemy hero name."
   }
@@ -418,6 +445,14 @@ function identificarHeroe(entrada) {
   return menorDistancia <= 3 ? mejorCoincidencia : entrada;
 }
 
+// FUNCIÓN PARA VERIFICAR SI UN HÉROE CORRESPONDE A LA LÍNEA SELECCIONADA
+function esHeroeDeLinea(nombreHeroe, linea) {
+  const heroesDeLinea = HERO_LANES[linea];
+  if (!heroesDeLinea) return true; // Si por alguna razón la línea no está definida, no filtra
+  
+  return heroesDeLinea.some(h => h.toLowerCase() === nombreHeroe.toLowerCase());
+}
+
 // LÓGICA DE BÚSQUEDA Y CRUZE CON MLBB HUB (VERCEL API)
 async function buscarCounter() {
   const linea = document.getElementById('partidaLinea').value;
@@ -431,7 +466,7 @@ async function buscarCounter() {
   const enemigoFinal = identificarHeroe(inputEnemigo);
   const pool = userPool[linea] || [];
   
-  // URL directa y confirmada de tu API en Vercel
+  // URL directa de tu API en Vercel
   const VERCEL_URL = "https://mlbb-counter-api-five.vercel.app"; 
 
   document.getElementById('poolResult').innerHTML = "<p style='color:var(--muted); font-size:0.85rem;'>Analizando matchup...</p>";
@@ -448,15 +483,31 @@ async function buscarCounter() {
 
     const apiCounters = data.counters || [];
 
-    // --- BLOQUE 2: MEJOR OPCIÓN GENERAL ---
+    // --- BLOQUE 2: MEJOR OPCIÓN GENERAL (FILTRADO POR LÍNEA) ---
     if (apiCounters.length > 0) {
+      // Filtrar counters que pertenecen a la línea seleccionada
+      const countersFiltradosPorLinea = apiCounters.filter(c => esHeroeDeLinea(c.name, linea));
+
       let htmlBloque2 = "";
-      apiCounters.forEach((c, i) => {
-        htmlBloque2 += `
-          <div class="item-badge">
-            ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
-          </div>`;
-      });
+      
+      if (countersFiltradosPorLinea.length > 0) {
+        countersFiltradosPorLinea.forEach((c, i) => {
+          htmlBloque2 += `
+            <div class="item-badge">
+              ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
+            </div>`;
+        });
+      } else {
+        // Fallback: Mostrar las mejores opciones globales aclarando que son de otras líneas
+        htmlBloque2 += `<p style="color:var(--gold); font-size:0.85rem; margin-bottom:8px;">No hay counters directos registrados para la línea <strong>${linea.toUpperCase()}</strong>. Mostrando opciones globales:</p>`;
+        apiCounters.forEach((c, i) => {
+          htmlBloque2 += `
+            <div class="item-badge" style="opacity:0.8;">
+              ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
+            </div>`;
+        });
+      }
+
       document.getElementById('generalResult').innerHTML = htmlBloque2;
     } else {
       document.getElementById('generalResult').innerHTML = `
