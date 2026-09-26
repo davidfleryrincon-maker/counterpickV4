@@ -282,98 +282,8 @@ const HERO_DATABASE = [
   "Baxia", "Masha", "Wanwan", "Silvanna", "Cecilion", "Carmilla", "Atlas", "Popol and Kupa", "Yu Zhong", "Luo Yi",
   "Benedetta", "Khaleed", "Barats", "Brody", "Yve", "Mathilda", "Paquito", "Gloo", "Phoveus", "Natan",
   "Aulus", "Aamon", "Valentina", "Edith", "Yin", "Melissa", "Xavier", "Julian", "Fredrinn", "Joy",
-  "Novaria", "Arlott", "Ixia", "Nolan", "Cici", "Chip", "Zhuxin", "Lukas", "Suyou", "Kaela"
+  "Novaria", "Arlott", "Ixia", "Nolan", "Cici", "Chip", "Zhuxin", "Lukas", "Suyu", "Suyou", "Kaela", "Calea"
 ];
-
-// RECOMENDACIONES EXCLUSIVAS DEL BLOQUE 2 POR LÍNEA
-const COUNTERS_BY_LANE = {
-  exp: {
-    // Caso 1: Lucha contra tanques o luchadores con regeneración/escudos
-    regen: {
-      enemies: ["uranus", "esmeralda", "edith", "yu zhong", "ruby", "thamuz", "terizla", "hilda", "alice", "gloo", "belerick"],
-      counters: [
-        { name: "Dyrroth", desc: "Reduce la armadura física a cero e impone su poder en intercambios tempranos." },
-        { name: "Cici", desc: "Kitea con su skill 1 a distancia corta infligiendo daño sostenido por % de vida." },
-        { name: "Baxia (EXP)", desc: "Su pasiva reduce drásticamente la curación y escudos del rival desde el nivel 1." }
-      ]
-    },
-    // Caso 2: Lucha contra luchadores de alta movilidad / dashes
-    mobile: {
-      enemies: ["kaela", "calea", "cici", "chou", "paquito", "benedetta", "joy", "arlott", "lukas", "suyu", "lapu-lapu", "badang"],
-      counters: [
-        { name: "Minsitthar", desc: "Su Ultimate deshabilita todos los parpadeos y habilidades de desplazamiento." },
-        { name: "Phoveus", desc: "Gana escudos constantes y salta sobre el rival cada vez que usa un dash." },
-        { name: "Khaleed", desc: "Dominio agresivo con su skill 1 en nivel 1 para denegar la oleada enemiga." }
-      ]
-    },
-    // Por defecto para la línea de EXP
-    default: [
-      { name: "Terizla", desc: "Gran resistencia física, despeje veloz de minions y CC masivo en peleas." },
-      { name: "Alpha", desc: "Daño verdadero sostenido que ignora la defensa del rival." },
-      { name: "Yu Zhong", desc: "Excelente sosten de vida e iniciación agresiva hacia la retaguardia." }
-    ]
-  },
-  mid: {
-    mobile: {
-      enemies: ["joy", "gusion", "harley", "hayabusa", "lancelot", "fanny", "julian", "nolan"],
-      counters: [
-        { name: "Eudora", desc: "Stun instantáneo y burst directo antes de que el rival reaccione." },
-        { name: "Nana", desc: "Su pasiva le otorga una vida extra y su Molina cancela combos." },
-        { name: "Valentina", desc: "Gran movilidad en mid lane y habilidad para robar Ultimates clave." }
-      ]
-    },
-    default: [
-      { name: "Valir", desc: "Empuja e inmoviliza a enemigos que buscan acercarse a cuerpo a cuerpo." },
-      { name: "Lylia", desc: "Limpieza instantánea de oleadas y reinicio de vida mediante su Ultimate." },
-      { name: "Zhuxin", desc: "Control de masas continuo para desplazar la formación enemiga." }
-    ]
-  },
-  gold: {
-    mobile: {
-      enemies: ["harith", "wanwan", "moscov", "fanny", "ling", "joy", "claude"],
-      counters: [
-        { name: "Melissa", desc: "Su barrera repele a héroes de cuerpo a cuerpo o que usen dashes." },
-        { name: "Brody", desc: "Intercambio de daño explosivo a larga distancia (Hit and Run)." },
-        { name: "Ixia", desc: "Control de área amplio que frena las entradas del tirador u asesino rival." }
-      ]
-    },
-    default: [
-      { name: "Claude", desc: "Máxima movilidad en batallas de equipo y excelente escalado a juego tardío." },
-      { name: "Bruno", desc: "Ataques críticos tempranos para dominar la fase de líneas." },
-      { name: "Beatrix", desc: "Adaptabilidad total de armas según la distancia y la composición enemiga." }
-    ]
-  },
-  jungle: {
-    tanky: {
-      enemies: ["fredrinn", "baxia", "barats", "hylos", "akai", "balmond"],
-      counters: [
-        { name: "Alpha (Jungle)", desc: "Derrite tanques y monstruos neutrales con daño verdadero directo." },
-        { name: "Martis", desc: "Inmunidad al control de masas y remate execution con su Ultimate." },
-        { name: "Karrie (Jungle)", desc: "Destruye objetivos de alta vida en el juego medio/tardío." }
-      ]
-    },
-    default: [
-      { name: "Nolan", desc: "Limpia la jungla a máxima velocidad y purifica stuns con sus habilidades." },
-      { name: "Hayabusa", desc: "Eliminación limpia de objetivos aislados y alta movilidad entre campamentos." },
-      { name: "Fanny", desc: "Presión en todo el mapa y alta capacidad de rotación temprana." }
-    ]
-  },
-  roam: {
-    mobile: {
-      enemies: ["fanny", "ling", "gusion", "joy", "hayabusa", "nolan"],
-      counters: [
-        { name: "Kaja", desc: "Supresión ineludible que asegura la baja del objetivo enfocado." },
-        { name: "Khufra", desc: "Su habilidad de pelota rebota y cancela cualquier parpadeo rival." },
-        { name: "Franco", desc: "Iniciación con gancho y supresión directa de objetivo único." }
-      ]
-    },
-    default: [
-      { name: "Tigreal", desc: "Control de masas masivo y desplazamiento de enemigos hacia tu equipo." },
-      { name: "Minotaur", desc: "Combinación de curación sostenida y levantamiento en área." },
-      { name: "Angela", desc: "Escudo global para salvar e iniciar con tu combatiente/jungla." }
-    ]
-  }
-};
 
 // DICCIONARIOS DE IDIOMA
 const i18n = {
@@ -390,8 +300,7 @@ const i18n = {
     block2Title: "🌍 BLOQUE 2: Mejor Opción General (MLBB Hub)",
     btnReset: "🔄 Analizar Nueva Partida",
     emptyPool: "Tu pool está vacío para esta línea. Agrega héroes arriba.",
-    noMatchInPool: "Ningún héroe en tu pool actual genera ventaja directa contra ",
-    recommendPool: "Recomendación basada en sinergia estándar de tu pool.",
+    noMatchInPool: "Ningún héroe de tu pool figura en el Top Counter de MLBB Hub para ",
     fuzzyFound: "Interpretado como: ",
     enterEnemy: "Por favor, ingresa el nombre del héroe enemigo."
   },
@@ -408,8 +317,7 @@ const i18n = {
     block2Title: "🌍 BLOCK 2: Best General Option (MLBB Hub)",
     btnReset: "🔄 Analyze New Matchup",
     emptyPool: "Your pool is empty for this lane. Add heroes above.",
-    noMatchInPool: "No heroes in your current pool hard-counter ",
-    recommendPool: "Recommendation based on standard pool synergy.",
+    noMatchInPool: "No heroes from your pool are listed in MLBB Hub Top Counters for ",
     fuzzyFound: "Interpreted as: ",
     enterEnemy: "Please enter the enemy hero name."
   }
@@ -510,26 +418,8 @@ function identificarHeroe(entrada) {
   return menorDistancia <= 3 ? mejorCoincidencia : entrada;
 }
 
-// OBTENER COUNTERS EXCLUSIVOS DE LA LÍNEA SELECCIONADA
-function obtenerCountersGeneralesPorLinea(linea, enemigo) {
-  const enemigoLow = enemigo.toLowerCase();
-  const laneData = COUNTERS_BY_LANE[linea] || COUNTERS_BY_LANE.exp;
-
-  if (laneData.regen && laneData.regen.enemies.some(e => e === enemigoLow)) {
-    return laneData.regen.counters;
-  }
-  if (laneData.mobile && laneData.mobile.enemies.some(e => e === enemigoLow)) {
-    return laneData.mobile.counters;
-  }
-  if (laneData.tanky && laneData.tanky.enemies.some(e => e === enemigoLow)) {
-    return laneData.tanky.counters;
-  }
-
-  return laneData.default;
-}
-
-// LÓGICA DE RECOMENDACIÓN MLBB
-function buscarCounter() {
+// LÓGICA DE BÚSQUEDA Y CRUZE CON MLBB HUB (VERCEL API)
+async function buscarCounter() {
   const linea = document.getElementById('partidaLinea').value;
   const inputEnemigo = document.getElementById('enemigoPick').value.trim();
   
@@ -541,48 +431,80 @@ function buscarCounter() {
   const enemigoFinal = identificarHeroe(inputEnemigo);
   const pool = userPool[linea] || [];
   
-  // Bloque 1 (Pool del usuario)
-  let bestPoolHero = pool[0] || null;
-  let razonPool = txt.recommendPool;
+  // URL de tu API en Vercel
+  const VERCEL_URL = "https://mlbb-counter-api-five.vercel.app"; 
+
+  // Notificación de carga
+  document.getElementById('poolResult').innerHTML = "<p style='color:var(--muted); font-size:0.85rem;'>Evaluando tu pool...</p>";
+  document.getElementById('generalResult').innerHTML = "<p style='color:var(--accent); font-size:0.9rem;'>Consultando counters en vivo en MLBB Hub...</p>";
+  document.getElementById('resultadosCounter').style.display = "block";
+
   let fuzzyNotice = (enemigoFinal.toLowerCase() !== inputEnemigo.toLowerCase()) 
     ? `<div class="fuzzy-notice">${txt.fuzzyFound} <strong>${enemigoFinal}</strong></div>` 
     : "";
 
-  if (pool.length === 0) {
-    document.getElementById('poolResult').innerHTML = `<p class="empty-msg">${txt.emptyPool}</p>`;
-  } else {
-    const enemigoLow = enemigoFinal.toLowerCase();
-    
-    if (['uranus', 'esmeralda', 'edith', 'phoveus'].some(e => enemigoLow.includes(e)) && pool.includes("Esmeralda")) {
-      bestPoolHero = "Esmeralda";
-      razonPool = "Absorbe escudos enemigos y anula la regeneración del rival en fase de líneas.";
-    } else if (['terizla', 'thamuz', 'ruby', 'alpha', 'yu zhong', 'kaela', 'cici'].some(e => enemigoLow.includes(e)) && pool.includes("Cici")) {
-      bestPoolHero = "Cici";
-      razonPool = "Kitea a distancia infligiendo daño por % de vida máxima evitando intercambios directos.";
-    } else if (['fanny', 'ling', 'gusion', 'hayabusa', 'joy'].some(e => enemigoLow.includes(e)) && pool.includes("Kaja")) {
-      bestPoolHero = "Kaja";
-      razonPool = "Su supresión ineludible detiene la movilidad del rival instantáneamente.";
+  try {
+    const response = await fetch(`${VERCEL_URL}/api/counter?hero=${encodeURIComponent(enemigoFinal)}`);
+    const data = await response.json();
+
+    const apiCounters = data.counters || [];
+
+    // --- BLOQUE 2: MEJOR OPCIÓN GENERAL (MLBB HUB EN VIVO) ---
+    if (apiCounters.length > 0) {
+      let htmlBloque2 = "";
+      apiCounters.forEach((c, i) => {
+        htmlBloque2 += `
+          <div class="item-badge">
+            ${i + 1}. <strong>${c.name}</strong> - Win Rate/Ventaja: ${c.winRate}
+          </div>`;
+      });
+      document.getElementById('generalResult').innerHTML = htmlBloque2;
     } else {
-      bestPoolHero = pool[0];
+      document.getElementById('generalResult').innerHTML = `
+        <p class="empty-msg">No se extrajeron datos automáticos, consulta la fuente directa:</p>
+        <a href="${data.source || 'https://mlbbhub.com/counter/' + enemigoFinal}" target="_blank" style="color:var(--accent); font-size:0.85rem; display:inline-block; margin-top:8px;">Ver en MLBB Hub &rarr;</a>`;
     }
 
-    document.getElementById('poolResult').innerHTML = `
-      ${fuzzyNotice}
-      <strong style="color:var(--success); font-size:1.2rem;">${bestPoolHero}</strong>
-      <p style="margin-top:4px; font-size:0.9rem; color:var(--text);">${razonPool}</p>
-    `;
+    // --- BLOQUE 1: MEJOR OPCIÓN DE TU POOL (FILTRANDO DESDE MLBB HUB) ---
+    if (pool.length === 0) {
+      document.getElementById('poolResult').innerHTML = `<p class="empty-msg">${txt.emptyPool}</p>`;
+    } else {
+      // Cruzar el pool del usuario con la lista en vivo devuelta por la API
+      const poolCoincidentes = [];
+
+      pool.forEach(miHeroe => {
+        const coincidencia = apiCounters.find(c => c.name.toLowerCase() === miHeroe.toLowerCase());
+        if (coincidencia) {
+          poolCoincidentes.push({ name: miHeroe, winRate: coincidencia.winRate });
+        }
+      });
+
+      if (poolCoincidentes.length > 0) {
+        let htmlBloque1 = `${fuzzyNotice}`;
+        poolCoincidentes.forEach((item, idx) => {
+          htmlBloque1 += `
+            <div class="item-badge" style="border-left-color:var(--success);">
+              🥇 <strong>${item.name}</strong> (Ventaja en MLBB Hub: ${item.winRate})
+            </div>`;
+        });
+        htmlBloque1 += `<p style="margin-top:6px; font-size:0.85rem; color:var(--success);">¡Confirmado! Este personaje de tu pool tiene ventaja directa según el meta actual.</p>`;
+        document.getElementById('poolResult').innerHTML = htmlBloque1;
+      } else {
+        // Fallback: Si ningún héroe del pool del usuario figura en el Top Counter en vivo
+        document.getElementById('poolResult').innerHTML = `
+          ${fuzzyNotice}
+          <p class="empty-msg">${txt.noMatchInPool} <strong>${enemigoFinal}</strong>.</p>
+          <div style="margin-top:8px;">
+            <span style="color:var(--muted); font-size:0.85rem;">Tu mejor alternativa por comodidad:</span><br>
+            <strong style="color:var(--gold); font-size:1.1rem;">${pool[0]}</strong>
+          </div>`;
+      }
+    }
+
+  } catch (err) {
+    document.getElementById('generalResult').innerHTML = `<p style="color:var(--danger); font-size:0.85rem;">Error al conectar con la API.</p>`;
+    document.getElementById('poolResult').innerHTML = `<p style="color:var(--danger); font-size:0.85rem;">No se pudo validar tu pool en vivo.</p>`;
   }
-
-  // Bloque 2 (Filtrado estricto por la línea actual)
-  const topCounters = obtenerCountersGeneralesPorLinea(linea, enemigoFinal);
-  
-  let htmlBloque2 = "";
-  topCounters.forEach((c, i) => {
-    htmlBloque2 += `<div class="item-badge">${i + 1}. <strong>${c.name}</strong> - ${c.desc}</div>`;
-  });
-
-  document.getElementById('generalResult').innerHTML = htmlBloque2;
-  document.getElementById('resultadosCounter').style.display = "block";
 }
 
 // REINICIAR BÚSQUEDA
