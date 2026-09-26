@@ -285,32 +285,33 @@ const HERO_DATABASE = [
   "Novaria", "Arlott", "Ixia", "Nolan", "Cici", "Chip", "Zhuxin", "Lukas", "Suyu", "Suyou", "Kaela", "Calea"
 ];
 
-// DICCIONARIO DE LÍNEAS HABITUALES POR HÉROE
+// DICCIONARIO DE LÍNEAS HABITUALES Y MULTIRROL POR HÉROE
 const HERO_LANES = {
   exp: [
     "Balmond", "Zilong", "Chou", "Sun", "Alpha", "Ruby", "Hilda", "Lapu-Lapu", "Argus", "Jawhead",
     "Martis", "Uranus", "Aldous", "Leomord", "Thamuz", "Minsitthar", "Badang", "Guinevere", "Esmeralda",
     "Terizla", "X.Borg", "Dyrroth", "Masha", "Silvanna", "Yu Zhong", "Benedetta", "Khaleed", "Barats",
     "Paquito", "Gloo", "Phoveus", "Aulus", "Edith", "Yin", "Julian", "Fredrinn", "Joy", "Arlott",
-    "Cici", "Lukas", "Suyu", "Suyou"
+    "Cici", "Lukas", "Suyu", "Suyou", "Alice", "Bane"
   ],
   mid: [
     "Alice", "Nana", "Eudora", "Gord", "Kagura", "Cyclops", "Aurora", "Vexana", "Odette", "Pharsa",
     "Valir", "Chang'e", "Vale", "Lunox", "Harith", "Lylia", "Cecilion", "Luo Yi", "Yve", "Valentina",
-    "Xavier", "Novaria", "Zhuxin"
+    "Xavier", "Novaria", "Zhuxin", "Julian", "Zhask"
   ],
   gold: [
     "Miya", "Bruno", "Clint", "Layla", "Moscov", "Irithel", "Lesley", "Hanabi", "Claude", "Kimmy",
-    "Granger", "Wanwan", "Brody", "Natan", "Melissa", "Ixia", "Popol and Kupa"
+    "Granger", "Wanwan", "Brody", "Natan", "Melissa", "Ixia", "Popol and Kupa", "Harith", "Lunox", "Alice"
   ],
   jungle: [
     "Saber", "Alucard", "Fanny", "Hayabusa", "Freya", "Yi Sun-shin", "Harley", "Lancelot", "Helcurt",
-    "Gusion", "Hanzo", "Ling", "Baxia", "Aamon", "Nolan", "Barats", "Martis", "Alpha", "Julian"
+    "Gusion", "Hanzo", "Ling", "Baxia", "Aamon", "Nolan", "Barats", "Martis", "Alpha", "Julian",
+    "Balmond", "Bane", "Jawhead", "Paquito", "Fredrinn", "Dyrroth", "Gloo", "Chou", "Popol and Kupa"
   ],
   roam: [
     "Tigreal", "Akai", "Franco", "Rafaela", "Minotauro", "Lolita", "Natalia", "Johnson", "Estes",
     "Grock", "Diggie", "Hylos", "Angela", "Kaja", "Selena", "Belerick", "Khufra", "Carmilla",
-    "Atlas", "Mathilda", "Chip"
+    "Atlas", "Mathilda", "Chip", "Chou", "Jawhead", "Edith", "Minsitthar", "Hilda", "Valir"
   ]
 };
 
@@ -448,12 +449,12 @@ function identificarHeroe(entrada) {
 // FUNCIÓN PARA VERIFICAR SI UN HÉROE CORRESPONDE A LA LÍNEA SELECCIONADA
 function esHeroeDeLinea(nombreHeroe, linea) {
   const heroesDeLinea = HERO_LANES[linea];
-  if (!heroesDeLinea) return true; // Si por alguna razón la línea no está definida, no filtra
+  if (!heroesDeLinea) return true;
   
   return heroesDeLinea.some(h => h.toLowerCase() === nombreHeroe.toLowerCase());
 }
 
-// LÓGICA DE BÚSQUEDA Y CRUZE CON MLBB HUB (VERCEL API)
+// LÓGICA DE BÚSQUEDA Y CRUCE CON MLBB HUB (VERCEL API)
 async function buscarCounter() {
   const linea = document.getElementById('partidaLinea').value;
   const inputEnemigo = document.getElementById('enemigoPick').value.trim();
@@ -478,14 +479,13 @@ async function buscarCounter() {
     : "";
 
   try {
-    const response = await fetch(`${VERCEL_URL}/?hero=${encodeURIComponent(enemigoFinal)}`);
+    const response = await fetch(`${VERCEL_URL}/?hero=${encodeURIComponent(enemigoFinal)}&lane=${encodeURIComponent(linea)}`);
     const data = await response.json();
 
     const apiCounters = data.counters || [];
 
     // --- BLOQUE 2: MEJOR OPCIÓN GENERAL (FILTRADO POR LÍNEA) ---
     if (apiCounters.length > 0) {
-      // Filtrar counters que pertenecen a la línea seleccionada
       const countersFiltradosPorLinea = apiCounters.filter(c => esHeroeDeLinea(c.name, linea));
 
       let htmlBloque2 = "";
@@ -498,9 +498,8 @@ async function buscarCounter() {
             </div>`;
         });
       } else {
-        // Fallback: Mostrar las mejores opciones globales aclarando que son de otras líneas
-        htmlBloque2 += `<p style="color:var(--gold); font-size:0.85rem; margin-bottom:8px;">No hay counters directos registrados para la línea <strong>${linea.toUpperCase()}</strong>. Mostrando opciones globales:</p>`;
-        apiCounters.forEach((c, i) => {
+        htmlBloque2 += `<p style="color:var(--gold); font-size:0.85rem; margin-bottom:8px;">No hay counters directos registrados especificamente para la línea <strong>${linea.toUpperCase()}</strong>. Mostrando opciones globales:</p>`;
+        apiCounters.slice(0, 6).forEach((c, i) => {
           htmlBloque2 += `
             <div class="item-badge" style="opacity:0.8;">
               ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
