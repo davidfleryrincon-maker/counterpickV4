@@ -269,10 +269,10 @@
 </div>
 
 <script>
-// BASE DE DATOS GENERAL DE HÉROES
+// BASE DE DATOS GENERAL DE HÉROES ACTUALIZADA
 const HERO_DATABASE = [
   "Miya", "Balmond", "Saber", "Alice", "Nana", "Tigreal", "Alucard", "Akai", "Franco", "Bane",
-  "Bruno", "Clint", "Rafaela", "Eudora", "Zilong", "Fanny", "Layla", "Minotauro", "Lolita", "Hayabusa",
+  "Bruno", "Clint", "Rafaela", "Eudora", "Zilong", "Fanny", "Layla", "Minotauro", "Minotaur", "Lolita", "Hayabusa",
   "Freya", "Gord", "Natalia", "Kagura", "Chou", "Sun", "Alpha", "Ruby", "Yi Sun-shin", "Moscov",
   "Johnson", "Cyclops", "Estes", "Hilda", "Aurora", "Lapu-Lapu", "Vexana", "Harley", "Irithel", "Grock",
   "Argus", "Odette", "Lancelot", "Diggie", "Hylos", "Zhask", "Helcurt", "Pharsa", "Lesley", "Jawhead",
@@ -282,36 +282,37 @@ const HERO_DATABASE = [
   "Baxia", "Masha", "Wanwan", "Silvanna", "Cecilion", "Carmilla", "Atlas", "Popol and Kupa", "Yu Zhong", "Luo Yi",
   "Benedetta", "Khaleed", "Barats", "Brody", "Yve", "Mathilda", "Paquito", "Gloo", "Phoveus", "Natan",
   "Aulus", "Aamon", "Valentina", "Edith", "Yin", "Melissa", "Xavier", "Julian", "Fredrinn", "Joy",
-  "Novaria", "Arlott", "Ixia", "Nolan", "Cici", "Chip", "Zhuxin", "Lukas", "Suyu", "Suyou", "Kaela", "Calea"
+  "Novaria", "Arlott", "Ixia", "Nolan", "Cici", "Chip", "Zhuxin", "Lukas", "Suyu", "Suyou", "Kaela", "Calea",
+  "Gatotkaca", "Beatrix", "Karina", "Marcel", "Kadita"
 ];
 
-// DICCIONARIO DE LÍNEAS HABITUALES Y MULTIRROL POR HÉROE
+// DICCIONARIO DE LÍNEAS HABITUALES
 const HERO_LANES = {
   exp: [
     "Balmond", "Zilong", "Chou", "Sun", "Alpha", "Ruby", "Hilda", "Lapu-Lapu", "Argus", "Jawhead",
     "Martis", "Uranus", "Aldous", "Leomord", "Thamuz", "Minsitthar", "Badang", "Guinevere", "Esmeralda",
     "Terizla", "X.Borg", "Dyrroth", "Masha", "Silvanna", "Yu Zhong", "Benedetta", "Khaleed", "Barats",
     "Paquito", "Gloo", "Phoveus", "Aulus", "Edith", "Yin", "Julian", "Fredrinn", "Joy", "Arlott",
-    "Cici", "Lukas", "Suyu", "Suyou", "Alice", "Bane"
+    "Cici", "Lukas", "Suyu", "Suyou", "Alice", "Bane", "Gatotkaca"
   ],
   mid: [
     "Alice", "Nana", "Eudora", "Gord", "Kagura", "Cyclops", "Aurora", "Vexana", "Odette", "Pharsa",
     "Valir", "Chang'e", "Vale", "Lunox", "Harith", "Lylia", "Cecilion", "Luo Yi", "Yve", "Valentina",
-    "Xavier", "Novaria", "Zhuxin", "Julian", "Zhask"
+    "Xavier", "Novaria", "Zhuxin", "Julian", "Zhask", "Kadita"
   ],
   gold: [
     "Miya", "Bruno", "Clint", "Layla", "Moscov", "Irithel", "Lesley", "Hanabi", "Claude", "Kimmy",
-    "Granger", "Wanwan", "Brody", "Natan", "Melissa", "Ixia", "Popol and Kupa", "Harith", "Lunox", "Alice"
+    "Granger", "Wanwan", "Brody", "Natan", "Melissa", "Ixia", "Popol and Kupa", "Harith", "Lunox", "Alice", "Beatrix"
   ],
   jungle: [
     "Saber", "Alucard", "Fanny", "Hayabusa", "Freya", "Yi Sun-shin", "Harley", "Lancelot", "Helcurt",
     "Gusion", "Hanzo", "Ling", "Baxia", "Aamon", "Nolan", "Barats", "Martis", "Alpha", "Julian",
-    "Balmond", "Bane", "Jawhead", "Paquito", "Fredrinn", "Dyrroth", "Gloo", "Chou", "Popol and Kupa", "Suyou", "Suyu"
+    "Balmond", "Bane", "Jawhead", "Paquito", "Fredrinn", "Dyrroth", "Gloo", "Chou", "Popol and Kupa", "Karina"
   ],
   roam: [
-    "Tigreal", "Akai", "Franco", "Rafaela", "Minotauro", "Lolita", "Natalia", "Johnson", "Estes",
+    "Tigreal", "Akai", "Franco", "Rafaela", "Minotauro", "Minotaur", "Lolita", "Natalia", "Johnson", "Estes",
     "Grock", "Diggie", "Hylos", "Angela", "Kaja", "Selena", "Belerick", "Khufra", "Carmilla",
-    "Atlas", "Mathilda", "Chip", "Chou", "Jawhead", "Edith", "Minsitthar", "Hilda", "Valir"
+    "Atlas", "Mathilda", "Chip", "Chou", "Jawhead", "Edith", "Minsitthar", "Hilda", "Valir", "Gatotkaca", "Kadita", "Marcel"
   ]
 };
 
@@ -354,7 +355,6 @@ const i18n = {
 const lang = window.navigator.language.startsWith('es') ? 'es' : 'en';
 const txt = i18n[lang];
 
-// INICIALIZACIÓN DE TEXTOS EN INTERFAZ
 document.getElementById('t-step1').innerText = txt.step1;
 document.getElementById('t-selectLane').innerText = txt.selectLane;
 document.getElementById('t-addHero').innerText = txt.addHero;
@@ -367,7 +367,6 @@ document.getElementById('t-block1Title').innerText = txt.block1Title;
 document.getElementById('t-block2Title').innerText = txt.block2Title;
 document.getElementById('t-btnReset').innerText = txt.btnReset;
 
-// POOL EN LOCALSTORAGE
 let userPool = JSON.parse(localStorage.getItem('mlbb_user_pool')) || {
   exp: [], mid: [], gold: [], jungle: [], roam: []
 };
@@ -413,7 +412,6 @@ function eliminarHeroePool(linea, index) {
   mostrarPoolActual();
 }
 
-// ALGORITMO DE LEVENSHTEIN (FUZZY SEARCH)
 function levenshtein(a, b) {
   const tmp = [];
   let i, j;
@@ -446,15 +444,12 @@ function identificarHeroe(entrada) {
   return menorDistancia <= 3 ? mejorCoincidencia : entrada;
 }
 
-// FUNCIÓN PARA VERIFICAR SI UN HÉROE CORRESPONDE A LA LÍNEA SELECCIONADA
 function esHeroeDeLinea(nombreHeroe, linea) {
   const heroesDeLinea = HERO_LANES[linea];
   if (!heroesDeLinea) return true;
-  
   return heroesDeLinea.some(h => h.toLowerCase() === nombreHeroe.toLowerCase());
 }
 
-// LÓGICA DE BÚSQUEDA Y CRUCE CON MLBB HUB (VERCEL API)
 async function buscarCounter() {
   const linea = document.getElementById('partidaLinea').value;
   const inputEnemigo = document.getElementById('enemigoPick').value.trim();
@@ -467,7 +462,6 @@ async function buscarCounter() {
   const enemigoFinal = identificarHeroe(inputEnemigo);
   const pool = userPool[linea] || [];
   
-  // URL directa de tu API en Vercel
   const VERCEL_URL = "https://mlbb-counter-api-five.vercel.app"; 
 
   document.getElementById('poolResult').innerHTML = "<p style='color:var(--muted); font-size:0.85rem;'>Analizando matchup...</p>";
@@ -484,33 +478,24 @@ async function buscarCounter() {
 
     const apiCounters = data.counters || [];
 
-    // --- BLOQUE 2: MEJOR OPCIÓN GENERAL (FILTRADO POR LÍNEA) ---
+    // --- BLOQUE 2: MEJOR OPCIÓN GENERAL ---
     if (apiCounters.length > 0) {
+      // Priorizar los de la línea elegida, pero si hay pocos, incluir el resto
       const countersFiltradosPorLinea = apiCounters.filter(c => esHeroeDeLinea(c.name, linea));
+      const listaFinal = countersFiltradosPorLinea.length >= 3 ? countersFiltradosPorLinea : apiCounters;
 
       let htmlBloque2 = "";
-      
-      if (countersFiltradosPorLinea.length > 0) {
-        countersFiltradosPorLinea.slice(0, 6).forEach((c, i) => {
-          htmlBloque2 += `
-            <div class="item-badge">
-              ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
-            </div>`;
-        });
-      } else {
-        htmlBloque2 += `<p style="color:var(--gold); font-size:0.85rem; margin-bottom:8px;">No hay counters directos registrados específicamente para la línea <strong>${linea.toUpperCase()}</strong>. Mostrando opciones globales:</p>`;
-        apiCounters.slice(0, 6).forEach((c, i) => {
-          htmlBloque2 += `
-            <div class="item-badge" style="opacity:0.8;">
-              ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
-            </div>`;
-        });
-      }
+      listaFinal.slice(0, 6).forEach((c, i) => {
+        htmlBloque2 += `
+          <div class="item-badge">
+            ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
+          </div>`;
+      });
 
       document.getElementById('generalResult').innerHTML = htmlBloque2;
     } else {
       document.getElementById('generalResult').innerHTML = `
-        <p style="color:var(--gold); font-size:0.85rem;">No se encontraron counters específicos registrados para <strong>${enemigoFinal}</strong> en la base de datos pública.</p>`;
+        <p style="color:var(--gold); font-size:0.85rem;">No se encontraron counters específicos registrados para <strong>${enemigoFinal}</strong>.</p>`;
     }
 
     // --- BLOQUE 1: MEJOR OPCIÓN DE TU POOL ---
@@ -520,7 +505,12 @@ async function buscarCounter() {
       const poolCoincidentes = [];
 
       pool.forEach(miHeroe => {
-        const coincidencia = apiCounters.find(c => c.name.toLowerCase() === miHeroe.toLowerCase());
+        const coincidencia = apiCounters.find(c => {
+          const nameA = c.name.toLowerCase();
+          const nameB = miHeroe.toLowerCase();
+          return nameA === nameB || (nameA === "minotaur" && nameB === "minotauro") || (nameA === "minotauro" && nameB === "minotaur");
+        });
+        
         if (coincidencia) {
           poolCoincidentes.push({ name: miHeroe, winRate: coincidencia.winRate });
         }
@@ -540,25 +530,23 @@ async function buscarCounter() {
         document.getElementById('poolResult').innerHTML = `
           ${fuzzyNotice}
           <div style="margin-top:4px;">
-            <span style="color:var(--muted); font-size:0.85rem;">Ningún personaje de tu pool tiene un counter directo registrado en MLBB Hub para esta línea. Tu mejor opción principal guardada es:</span><br>
+            <span style="color:var(--muted); font-size:0.85rem;">Ningún personaje de tu pool tiene un counter directo registrado en MLBB Hub. Tu mejor opción principal guardada para esta línea es:</span><br>
             <strong style="color:var(--gold); font-size:1.1rem; display:inline-block; margin-top:6px;">${pool[0]}</strong>
           </div>`;
       }
     }
 
   } catch (err) {
-    document.getElementById('generalResult').innerHTML = `<p style="color:var(--danger); font-size:0.85rem;">Error al conectar con el servidor de Vercel. Verifica tu conexión o el estado del despliegue.</p>`;
+    document.getElementById('generalResult').innerHTML = `<p style="color:var(--danger); font-size:0.85rem;">Error al conectar con el servidor de Vercel.</p>`;
     document.getElementById('poolResult').innerHTML = `<p style="color:var(--danger); font-size:0.85rem;">No se pudo procesar la consulta.</p>`;
   }
 }
 
-// REINICIAR BÚSQUEDA
 function reiniciarBusqueda() {
   document.getElementById('enemigoPick').value = "";
   document.getElementById('resultadosCounter').style.display = "none";
 }
 
-// Inicializar interfaz
 mostrarPoolActual();
 </script>
 
