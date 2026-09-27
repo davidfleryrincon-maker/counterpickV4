@@ -286,7 +286,7 @@ const HERO_DATABASE = [
   "Gatotkaca", "Beatrix", "Karina", "Marcel", "Kadita"
 ];
 
-// DICCIONARIO DE LÍNEAS HABITUALES
+// DICCIONARIO DE LÍNEAS HABITUALES (SINCRONIZADO EXACTAMENTE CON INDEX.JS)
 const HERO_LANES = {
   exp: [
     "Balmond", "Zilong", "Chou", "Sun", "Alpha", "Ruby", "Hilda", "Lapu-Lapu", "Argus", "Jawhead",
@@ -307,7 +307,8 @@ const HERO_LANES = {
   jungle: [
     "Saber", "Alucard", "Fanny", "Hayabusa", "Freya", "Yi Sun-shin", "Harley", "Lancelot", "Helcurt",
     "Gusion", "Hanzo", "Ling", "Baxia", "Aamon", "Nolan", "Barats", "Martis", "Alpha", "Julian",
-    "Balmond", "Bane", "Jawhead", "Paquito", "Fredrinn", "Dyrroth", "Gloo", "Chou", "Popol and Kupa", "Karina"
+    "Balmond", "Bane", "Jawhead", "Paquito", "Fredrinn", "Dyrroth", "Gloo", "Chou", "Popol and Kupa",
+    "Karina", "Lukas", "Suyu", "Suyou"
   ],
   roam: [
     "Tigreal", "Akai", "Franco", "Rafaela", "Minotauro", "Minotaur", "Lolita", "Natalia", "Johnson", "Estes",
@@ -480,7 +481,6 @@ async function buscarCounter() {
 
     // --- BLOQUE 2: MEJOR OPCIÓN GENERAL ---
     if (apiCounters.length > 0) {
-      // Priorizar los de la línea elegida, pero si hay pocos, incluir el resto
       const countersFiltradosPorLinea = apiCounters.filter(c => esHeroeDeLinea(c.name, linea));
       const listaFinal = countersFiltradosPorLinea.length >= 3 ? countersFiltradosPorLinea : apiCounters;
 
