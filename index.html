@@ -226,7 +226,7 @@
     
     <label id="t-addHero">Agregar héroe a esta línea:</label>
     <div class="input-group">
-      <input type="text" id="nuevoHeroePool" placeholder="Ej: Paquito, Chou, Faramis...">
+      <input type="text" id="nuevoHeroePool" placeholder="Ej: Paquito, Chou, Faramis..." autocomplete="off" onkeypress="if(event.key === 'Enter') agregarHeroePool()">
       <button onclick="agregarHeroePool()" id="t-btnAdd">Agregar</button>
     </div>
 
@@ -246,7 +246,7 @@
     </select>
 
     <label for="enemigoPick" id="t-enemyPick">Pick Enemigo en tu línea:</label>
-    <input type="text" id="enemigoPick" placeholder="Ej: Uranus, Hirara, Faramis...">
+    <input type="text" id="enemigoPick" placeholder="Ej: Uranus, Hirara, Faramis..." autocomplete="off" onkeypress="if(event.key === 'Enter') buscarCounter()">
 
     <button onclick="buscarCounter()" id="t-btnAnalyze">Analizar Matchup</button>
   </div>
@@ -460,7 +460,6 @@ function identificarHeroe(entrada) {
     }
   });
 
-  // Umbral máximo de 2 diferencias para considerar autocorregir
   return menorDistancia <= 2 ? mejorCoincidencia : entrada;
 }
 
