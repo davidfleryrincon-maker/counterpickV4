@@ -271,7 +271,6 @@
 <script>
 const VERCEL_URL = "https://mlbb-counter-api-five.vercel.app"; 
 
-// BASE DE DATOS LOCAL INICIAL (Se actualiza automáticamente en vivo desde Vercel/MLBB Hub)
 let HERO_DATABASE = [
   "Miya", "Balmond", "Saber", "Alice", "Nana", "Tigreal", "Alucard", "Akai", "Franco", "Bane",
   "Bruno", "Clint", "Rafaela", "Eudora", "Zilong", "Fanny", "Layla", "Minotauro", "Minotaur", "Lolita", "Hayabusa",
@@ -288,7 +287,6 @@ let HERO_DATABASE = [
   "Gatotkaca", "Beatrix", "Karina", "Marcel", "Kadita", "Faramis", "Floryn", "Hirara"
 ];
 
-// DICCIONARIO DE LÍNEAS HABITUALES
 const HERO_LANES = {
   exp: [
     "Balmond", "Zilong", "Chou", "Sun", "Alpha", "Ruby", "Hilda", "Lapu-Lapu", "Argus", "Jawhead",
@@ -319,13 +317,11 @@ const HERO_LANES = {
   ]
 };
 
-// SINCRONIZAR HÉROES DESDE LA API AL CARGAR
 async function sincronizarHeroesEnVivo() {
   try {
     const res = await fetch(`${VERCEL_URL}/?getHeroes=true`);
     const data = await res.json();
     if (data.heroes && Array.isArray(data.heroes) && data.heroes.length > 0) {
-      // Combinar lista oficial recibida con la local sin duplicados
       const setUnico = new Set([...HERO_DATABASE, ...data.heroes]);
       HERO_DATABASE = Array.from(setUnico);
     }
@@ -335,7 +331,6 @@ async function sincronizarHeroesEnVivo() {
 }
 sincronizarHeroesEnVivo();
 
-// DICCIONARIOS DE IDIOMA
 const i18n = {
   es: {
     step1: "1. Configurar tu Pool de Héroes",
@@ -366,8 +361,7 @@ const i18n = {
     block2Title: "🌍 BLOCK 2: Best General Option (MLBB Hub)",
     btnReset: "🔄 Analyze New Matchup",
     emptyPool: "Your pool is empty for this lane. Add heroes above.",
-    fuzzyFound: "Interpreted as: ",
-    enterEnemy: "Please enter the enemy hero name."
+    fuzzyFound: "Interpreted as: "
   }
 };
 
@@ -418,8 +412,10 @@ function agregarHeroePool() {
   if (nombreRaw) {
     const nombreIdentificado = identificarHeroe(nombreRaw);
     if (!userPool[linea]) userPool[linea] = [];
-    userPool[linea].push(nombreIdentificado);
-    guardarPool();
+    if (!userPool[linea].includes(nombreIdentificado)) {
+      userPool[linea].push(nombreIdentificado);
+      guardarPool();
+    }
     mostrarPoolActual();
     input.value = "";
   }
@@ -447,31 +443,34 @@ function levenshtein(a, b) {
   return tmp[a.length][b.length];
 }
 
-// LÓGICA DE IDENTIFICACIÓN MEJORADA (Evita falsos reemplazos de Faramis, Hirara, etc.)
+// LÓGICA DE IDENTIFICACIÓN CON NORMALIZACIÓN DE SÍMBOLOS Y CARACTERES
+function limpiarTexto(str) {
+  return str.toLowerCase()
+    .replace(/[''\.\-\s]/g, '') // Elimina apóstrofes, puntos, guiones y espacios
+    .trim();
+}
+
 function identificarHeroe(entrada) {
   if (!entrada) return entrada;
-  const limpia = entrada.toLowerCase().trim();
+  const limpia = limpiarTexto(entrada);
 
-  // 1. REGLA DE ORO: Si coincide exactamente con un héroe registrado, devolverlo tal cual.
-  const coincidenciaExacta = HERO_DATABASE.find(h => h.toLowerCase() === limpia);
-  if (coincidenciaExacta) {
-    return coincidenciaExacta;
-  }
+  // 1. Coincidencia Exacta Limpia
+  const coincidenciaExacta = HERO_DATABASE.find(h => limpiarTexto(h) === limpia);
+  if (coincidenciaExacta) return coincidenciaExacta;
 
-  // 2. Si no coincide exacto, evaluar distancia de Levenshtein
+  // 2. Distancia Levenshtein sobre strings limpios
   let mejorCoincidencia = entrada;
   let menorDistancia = Infinity;
 
   HERO_DATABASE.forEach(heroe => {
-    const distancia = levenshtein(limpia, heroe.toLowerCase());
+    const distancia = levenshtein(limpia, limpiarTexto(heroe));
     if (distancia < menorDistancia) {
       menorDistancia = distancia;
       mejorCoincidencia = heroe;
     }
   });
 
-  // 3. Aplicar corrección solo con diferencia de <= 2 caracteres y longitud >= 4
-  if (menorDistancia <= 2 && limpia.length >= 4) {
+  if (menorDistancia <= 2 && limpia.length >= 3) {
     return mejorCoincidencia;
   }
 
@@ -481,7 +480,23 @@ function identificarHeroe(entrada) {
 function esHeroeDeLinea(nombreHeroe, linea) {
   const heroesDeLinea = HERO_LANES[linea];
   if (!heroesDeLinea) return true;
-  return heroesDeLinea.some(h => h.toLowerCase() === nombreHeroe.toLowerCase());
+  
+  // Si el héroe está mapeado en la línea dada
+  const enLinea = heroesDeLinea.some(h => limpiarTexto(h) === limpiarTexto(nombreHeroe));
+  if (enLinea) return true;
+
+  // Si no está mapeado en NINGUNA línea conocida, asumir true para no descartarlo por error de sincro
+  const mapeadoEnAlgunaParte = Object.values(HERO_LANES).some(lista => 
+    lista.some(h => limpiarTexto(h) === limpiarTexto(nombreHeroe))
+  );
+
+  return !mapeadoEnAlgunaParte;
+}
+
+function parseWinRate(wrStr) {
+  if (!wrStr) return 0;
+  const num = parseFloat(wrStr.replace('%', ''));
+  return isNaN(num) ? 0 : num;
 }
 
 async function buscarCounter() {
@@ -500,7 +515,7 @@ async function buscarCounter() {
   document.getElementById('generalResult').innerHTML = "<p style='color:var(--accent); font-size:0.9rem;'>Consultando counters en vivo en MLBB Hub...</p>";
   document.getElementById('resultadosCounter').style.display = "block";
 
-  let fuzzyNotice = (enemigoFinal.toLowerCase() !== inputEnemigo.toLowerCase()) 
+  let fuzzyNotice = (limpiarTexto(enemigoFinal) !== limpiarTexto(inputEnemigo)) 
     ? `<div class="fuzzy-notice">${txt.fuzzyFound} <strong>${enemigoFinal}</strong></div>` 
     : "";
 
@@ -536,16 +551,19 @@ async function buscarCounter() {
       const poolCoincidentes = [];
 
       pool.forEach(miHeroe => {
-        const coincidencia = apiCounters.find(c => {
-          const nameA = c.name.toLowerCase();
-          const nameB = miHeroe.toLowerCase();
-          return nameA === nameB || (nameA === "minotaur" && nameB === "minotauro") || (nameA === "minotauro" && nameB === "minotaur");
-        });
+        const coincidencia = apiCounters.find(c => limpiarTexto(c.name) === limpiarTexto(miHeroe));
         
         if (coincidencia) {
-          poolCoincidentes.push({ name: miHeroe, winRate: coincidencia.winRate });
+          poolCoincidentes.push({ 
+            name: miHeroe, 
+            winRate: coincidencia.winRate,
+            wrValue: parseWinRate(coincidencia.winRate)
+          });
         }
       });
+
+      // ORDENAR POR VENTAJAS (WIN RATE) DE MAYOR A MENOR
+      poolCoincidentes.sort((a, b) => b.wrValue - a.wrValue);
 
       if (poolCoincidentes.length > 0) {
         let htmlBloque1 = `${fuzzyNotice}`;
