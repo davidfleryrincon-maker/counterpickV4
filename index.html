@@ -269,11 +269,13 @@
 </div>
 
 <script>
-// BASE DE DATOS GENERAL DE HÉROES ACTUALIZADA
-const HERO_DATABASE = [
+const VERCEL_URL = "https://mlbb-counter-api-five.vercel.app"; 
+
+// BASE DE DATOS LOCAL INICIAL (Se actualiza automáticamente en vivo desde Vercel/MLBB Hub)
+let HERO_DATABASE = [
   "Miya", "Balmond", "Saber", "Alice", "Nana", "Tigreal", "Alucard", "Akai", "Franco", "Bane",
   "Bruno", "Clint", "Rafaela", "Eudora", "Zilong", "Fanny", "Layla", "Minotauro", "Minotaur", "Lolita", "Hayabusa",
-  "Freya", "Gord", "Natalia", "Kagura", "Chou", "Sun", "Alpha", "Ruby", "Yi Sun-shin", "Moscov",
+  "Freya", "Gord", "Natalia", "Kagura", "Chou", "Sun", "Alpha", "Ruby", "Yi Sun-shin", "Moskov", "Moscov",
   "Johnson", "Cyclops", "Estes", "Hilda", "Aurora", "Lapu-Lapu", "Vexana", "Harley", "Irithel", "Grock",
   "Argus", "Odette", "Lancelot", "Diggie", "Hylos", "Zhask", "Helcurt", "Pharsa", "Lesley", "Jawhead",
   "Angela", "Gusion", "Valir", "Martis", "Uranus", "Hanabi", "Chang'e", "Kaja", "Selena", "Aldous",
@@ -283,10 +285,10 @@ const HERO_DATABASE = [
   "Benedetta", "Khaleed", "Barats", "Brody", "Yve", "Mathilda", "Paquito", "Gloo", "Phoveus", "Natan",
   "Aulus", "Aamon", "Valentina", "Edith", "Yin", "Melissa", "Xavier", "Julian", "Fredrinn", "Joy",
   "Novaria", "Arlott", "Ixia", "Nolan", "Cici", "Chip", "Zhuxin", "Lukas", "Suyu", "Suyou", "Kaela", "Calea",
-  "Gatotkaca", "Beatrix", "Karina", "Marcel", "Kadita"
+  "Gatotkaca", "Beatrix", "Karina", "Marcel", "Kadita", "Faramis", "Floryn", "Hirara"
 ];
 
-// DICCIONARIO DE LÍNEAS HABITUALES (SINCRONIZADO EXACTAMENTE CON INDEX.JS)
+// DICCIONARIO DE LÍNEAS HABITUALES
 const HERO_LANES = {
   exp: [
     "Balmond", "Zilong", "Chou", "Sun", "Alpha", "Ruby", "Hilda", "Lapu-Lapu", "Argus", "Jawhead",
@@ -298,10 +300,10 @@ const HERO_LANES = {
   mid: [
     "Alice", "Nana", "Eudora", "Gord", "Kagura", "Cyclops", "Aurora", "Vexana", "Odette", "Pharsa",
     "Valir", "Chang'e", "Vale", "Lunox", "Harith", "Lylia", "Cecilion", "Luo Yi", "Yve", "Valentina",
-    "Xavier", "Novaria", "Zhuxin", "Julian", "Zhask", "Kadita"
+    "Xavier", "Novaria", "Zhuxin", "Julian", "Zhask", "Kadita", "Faramis"
   ],
   gold: [
-    "Miya", "Bruno", "Clint", "Layla", "Moscov", "Irithel", "Lesley", "Hanabi", "Claude", "Kimmy",
+    "Miya", "Bruno", "Clint", "Layla", "Moskov", "Moscov", "Irithel", "Lesley", "Hanabi", "Claude", "Kimmy",
     "Granger", "Wanwan", "Brody", "Natan", "Melissa", "Ixia", "Popol and Kupa", "Harith", "Lunox", "Alice", "Beatrix"
   ],
   jungle: [
@@ -313,9 +315,25 @@ const HERO_LANES = {
   roam: [
     "Tigreal", "Akai", "Franco", "Rafaela", "Minotauro", "Minotaur", "Lolita", "Natalia", "Johnson", "Estes",
     "Grock", "Diggie", "Hylos", "Angela", "Kaja", "Selena", "Belerick", "Khufra", "Carmilla",
-    "Atlas", "Mathilda", "Chip", "Chou", "Jawhead", "Edith", "Minsitthar", "Hilda", "Valir", "Gatotkaca", "Kadita", "Marcel"
+    "Atlas", "Mathilda", "Chip", "Chou", "Jawhead", "Edith", "Minsitthar", "Hilda", "Valir", "Gatotkaca", "Kadita", "Marcel", "Faramis", "Floryn"
   ]
 };
+
+// SINCRONIZAR HÉROES DESDE LA API AL CARGAR
+async function sincronizarHeroesEnVivo() {
+  try {
+    const res = await fetch(`${VERCEL_URL}/?getHeroes=true`);
+    const data = await res.json();
+    if (data.heroes && Array.isArray(data.heroes) && data.heroes.length > 0) {
+      // Combinar lista oficial recibida con la local sin duplicados
+      const setUnico = new Set([...HERO_DATABASE, ...data.heroes]);
+      HERO_DATABASE = Array.from(setUnico);
+    }
+  } catch (e) {
+    console.warn("Usando base de datos local de reserva.");
+  }
+}
+sincronizarHeroesEnVivo();
 
 // DICCIONARIOS DE IDIOMA
 const i18n = {
@@ -429,8 +447,18 @@ function levenshtein(a, b) {
   return tmp[a.length][b.length];
 }
 
+// LÓGICA DE IDENTIFICACIÓN MEJORADA (Evita falsos reemplazos de Faramis, Hirara, etc.)
 function identificarHeroe(entrada) {
+  if (!entrada) return entrada;
   const limpia = entrada.toLowerCase().trim();
+
+  // 1. REGLA DE ORO: Si coincide exactamente con un héroe registrado, devolverlo tal cual.
+  const coincidenciaExacta = HERO_DATABASE.find(h => h.toLowerCase() === limpia);
+  if (coincidenciaExacta) {
+    return coincidenciaExacta;
+  }
+
+  // 2. Si no coincide exacto, evaluar distancia de Levenshtein
   let mejorCoincidencia = entrada;
   let menorDistancia = Infinity;
 
@@ -442,7 +470,12 @@ function identificarHeroe(entrada) {
     }
   });
 
-  return menorDistancia <= 3 ? mejorCoincidencia : entrada;
+  // 3. Aplicar corrección solo con diferencia de <= 2 caracteres y longitud >= 4
+  if (menorDistancia <= 2 && limpia.length >= 4) {
+    return mejorCoincidencia;
+  }
+
+  return entrada;
 }
 
 function esHeroeDeLinea(nombreHeroe, linea) {
@@ -462,8 +495,6 @@ async function buscarCounter() {
 
   const enemigoFinal = identificarHeroe(inputEnemigo);
   const pool = userPool[linea] || [];
-  
-  const VERCEL_URL = "https://mlbb-counter-api-five.vercel.app"; 
 
   document.getElementById('poolResult').innerHTML = "<p style='color:var(--muted); font-size:0.85rem;'>Analizando matchup...</p>";
   document.getElementById('generalResult').innerHTML = "<p style='color:var(--accent); font-size:0.9rem;'>Consultando counters en vivo en MLBB Hub...</p>";
