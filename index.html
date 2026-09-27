@@ -306,7 +306,7 @@ const HERO_LANES = {
   jungle: [
     "Saber", "Alucard", "Fanny", "Hayabusa", "Freya", "Yi Sun-shin", "Harley", "Lancelot", "Helcurt",
     "Gusion", "Hanzo", "Ling", "Baxia", "Aamon", "Nolan", "Barats", "Martis", "Alpha", "Julian",
-    "Balmond", "Bane", "Jawhead", "Paquito", "Fredrinn", "Dyrroth", "Gloo", "Chou", "Popol and Kupa"
+    "Balmond", "Bane", "Jawhead", "Paquito", "Fredrinn", "Dyrroth", "Gloo", "Chou", "Popol and Kupa", "Suyou", "Suyu"
   ],
   roam: [
     "Tigreal", "Akai", "Franco", "Rafaela", "Minotauro", "Lolita", "Natalia", "Johnson", "Estes",
@@ -491,14 +491,14 @@ async function buscarCounter() {
       let htmlBloque2 = "";
       
       if (countersFiltradosPorLinea.length > 0) {
-        countersFiltradosPorLinea.forEach((c, i) => {
+        countersFiltradosPorLinea.slice(0, 6).forEach((c, i) => {
           htmlBloque2 += `
             <div class="item-badge">
               ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
             </div>`;
         });
       } else {
-        htmlBloque2 += `<p style="color:var(--gold); font-size:0.85rem; margin-bottom:8px;">No hay counters directos registrados especificamente para la línea <strong>${linea.toUpperCase()}</strong>. Mostrando opciones globales:</p>`;
+        htmlBloque2 += `<p style="color:var(--gold); font-size:0.85rem; margin-bottom:8px;">No hay counters directos registrados específicamente para la línea <strong>${linea.toUpperCase()}</strong>. Mostrando opciones globales:</p>`;
         apiCounters.slice(0, 6).forEach((c, i) => {
           htmlBloque2 += `
             <div class="item-badge" style="opacity:0.8;">
