@@ -188,6 +188,14 @@
       font-size: 0.9rem;
     }
 
+    .hero-reason {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.3;
+      padding-left: 2px;
+    }
+
     .fuzzy-notice {
       font-size: 0.8rem;
       color: var(--gold);
@@ -532,9 +540,11 @@ async function buscarCounter() {
 
       let htmlBloque2 = "";
       listaFinal.slice(0, 6).forEach((c, i) => {
+        const reasonHtml = c.reason ? `<div class="hero-reason">💡 ${c.reason}</div>` : "";
         htmlBloque2 += `
           <div class="item-badge">
             ${i + 1}. <strong>${c.name}</strong> - Ventaja: ${c.winRate}
+            ${reasonHtml}
           </div>`;
       });
 
@@ -557,7 +567,8 @@ async function buscarCounter() {
           poolCoincidentes.push({ 
             name: miHeroe, 
             winRate: coincidencia.winRate,
-            wrValue: parseWinRate(coincidencia.winRate)
+            wrValue: parseWinRate(coincidencia.winRate),
+            reason: coincidencia.reason || null
           });
         }
       });
@@ -568,9 +579,11 @@ async function buscarCounter() {
       if (poolCoincidentes.length > 0) {
         let htmlBloque1 = `${fuzzyNotice}`;
         poolCoincidentes.forEach((item) => {
+          const reasonHtml = item.reason ? `<div class="hero-reason">💡 ${item.reason}</div>` : "";
           htmlBloque1 += `
             <div class="item-badge" style="border-left-color:var(--success);">
               🥇 <strong>${item.name}</strong> (Ventaja en MLBB Hub: ${item.winRate})
+              ${reasonHtml}
             </div>`;
         });
         htmlBloque1 += `<p style="margin-top:6px; font-size:0.85rem; color:var(--success);">¡Opción recomendada! Este personaje de tu pool figura en el meta actual contra ${enemigoFinal}.</p>`;
