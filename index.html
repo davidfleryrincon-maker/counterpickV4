@@ -173,10 +173,17 @@
     .block-title {
       font-weight: bold;
       color: var(--gold);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       text-transform: uppercase;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       letter-spacing: 0.5px;
+    }
+
+    .block-subtitle {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 12px;
+      line-height: 1.2;
     }
 
     .item-badge {
@@ -262,12 +269,14 @@
   <!-- PASO 3: PANEL DE RESULTADOS -->
   <div id="resultadosCounter" style="display:none;">
     <div class="step-card">
-      <div class="block-title" id="t-block1Title">🥇 BLOQUE 1: Mejor Opción de tu Pool</div>
+      <div class="block-title" id="t-block1Title">🥇 TU MEJOR OPCIÓN</div>
+      <div class="block-subtitle" id="t-block1Sub">Según los héroes que sabes usar en esta línea</div>
       <div id="poolResult"></div>
     </div>
 
     <div class="step-card">
-      <div class="block-title" style="color:var(--accent);" id="t-block2Title">🌍 BLOQUE 2: Mejor Opción General (MLBB Hub)</div>
+      <div class="block-title" style="color:var(--accent);" id="t-block2Title">🌍 OPCIÓN ESTADÍSTICAMENTE FAVORABLE</div>
+      <div class="block-subtitle" id="t-block2Sub">Según los datos del meta</div>
       <div id="generalResult"></div>
     </div>
 
@@ -349,8 +358,10 @@ const i18n = {
     yourLane: "Línea que jugarás:",
     enemyPick: "Pick Enemigo en tu línea:",
     btnAnalyze: "Analizar Matchup",
-    block1Title: "🥇 BLOQUE 1: Mejor Opción de tu Pool",
-    block2Title: "🌍 BLOQUE 2: Mejor Opción General (MLBB Hub)",
+    block1Title: "🥇 TU MEJOR OPCIÓN",
+    block1Sub: "Según los héroes que sabes usar en esta línea",
+    block2Title: "🌍 OPCIÓN ESTADÍSTICAMENTE FAVORABLE",
+    block2Sub: "Según los datos del meta",
     btnReset: "🔄 Analizar Nueva Partida",
     emptyPool: "Tu pool está vacío para esta línea. Agrega héroes arriba.",
     fuzzyFound: "Interpretado como: ",
@@ -365,8 +376,10 @@ const i18n = {
     yourLane: "Lane you will play:",
     enemyPick: "Enemy Pick in your lane:",
     btnAnalyze: "Analyze Matchup",
-    block1Title: "🥇 BLOCK 1: Best Option from Your Pool",
-    block2Title: "🌍 BLOCK 2: Best General Option (MLBB Hub)",
+    block1Title: "🥇 YOUR BEST OPTION",
+    block1Sub: "Based on the heroes you know how to use in this lane",
+    block2Title: "🌍 STATISTICALLY FAVORABLE OPTION",
+    block2Sub: "Based on meta data",
     btnReset: "🔄 Analyze New Matchup",
     emptyPool: "Your pool is empty for this lane. Add heroes above.",
     fuzzyFound: "Interpreted as: "
@@ -385,7 +398,9 @@ document.getElementById('t-yourLane').innerText = txt.yourLane;
 document.getElementById('t-enemyPick').innerText = txt.enemyPick;
 document.getElementById('t-btnAnalyze').innerText = txt.btnAnalyze;
 document.getElementById('t-block1Title').innerText = txt.block1Title;
+document.getElementById('t-block1Sub').innerText = txt.block1Sub;
 document.getElementById('t-block2Title').innerText = txt.block2Title;
+document.getElementById('t-block2Sub').innerText = txt.block2Sub;
 document.getElementById('t-btnReset').innerText = txt.btnReset;
 
 let userPool = JSON.parse(localStorage.getItem('mlbb_user_pool')) || {
