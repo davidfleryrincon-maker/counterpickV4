@@ -226,7 +226,7 @@
     
     <label id="t-addHero">Agregar héroe a esta línea:</label>
     <div class="input-group">
-      <input type="text" id="nuevoHeroePool" placeholder="Ej: Paquito, Chou...">
+      <input type="text" id="nuevoHeroePool" placeholder="Ej: Paquito, Chou, Faramis...">
       <button onclick="agregarHeroePool()" id="t-btnAdd">Agregar</button>
     </div>
 
@@ -246,7 +246,7 @@
     </select>
 
     <label for="enemigoPick" id="t-enemyPick">Pick Enemigo en tu línea:</label>
-    <input type="text" id="enemigoPick" placeholder="Ej: Uranus, Kaela, Brody...">
+    <input type="text" id="enemigoPick" placeholder="Ej: Uranus, Hirara, Faramis...">
 
     <button onclick="buscarCounter()" id="t-btnAnalyze">Analizar Matchup</button>
   </div>
@@ -269,22 +269,41 @@
 </div>
 
 <script>
-// BASE DE DATOS GENERAL DE HÉROES ACTUALIZADA
-const HERO_DATABASE = [
-  "Miya", "Balmond", "Saber", "Alice", "Nana", "Tigreal", "Alucard", "Akai", "Franco", "Bane",
-  "Bruno", "Clint", "Rafaela", "Eudora", "Zilong", "Fanny", "Layla", "Minotauro", "Minotaur", "Lolita", "Hayabusa",
-  "Freya", "Gord", "Natalia", "Kagura", "Chou", "Sun", "Alpha", "Ruby", "Yi Sun-shin", "Moscov",
-  "Johnson", "Cyclops", "Estes", "Hilda", "Aurora", "Lapu-Lapu", "Vexana", "Harley", "Irithel", "Grock",
-  "Argus", "Odette", "Lancelot", "Diggie", "Hylos", "Zhask", "Helcurt", "Pharsa", "Lesley", "Jawhead",
-  "Angela", "Gusion", "Valir", "Martis", "Uranus", "Hanabi", "Chang'e", "Kaja", "Selena", "Aldous",
-  "Claude", "Vale", "Leomord", "Lunox", "Hanzo", "Belerick", "Kimmy", "Thamuz", "Harith", "Minsitthar",
-  "Badang", "Khufra", "Granger", "Guinevere", "Esmeralda", "Terizla", "X.Borg", "Ling", "Dyrroth", "Lylia",
-  "Baxia", "Masha", "Wanwan", "Silvanna", "Cecilion", "Carmilla", "Atlas", "Popol and Kupa", "Yu Zhong", "Luo Yi",
-  "Benedetta", "Khaleed", "Barats", "Brody", "Yve", "Mathilda", "Paquito", "Gloo", "Phoveus", "Natan",
-  "Aulus", "Aamon", "Valentina", "Edith", "Yin", "Melissa", "Xavier", "Julian", "Fredrinn", "Joy",
-  "Novaria", "Arlott", "Ixia", "Nolan", "Cici", "Chip", "Zhuxin", "Lukas", "Suyu", "Suyou", "Kaela", "Calea",
-  "Gatotkaca", "Beatrix", "Karina", "Marcel", "Kadita"
+// URL DE TU BACKEND EN VERCEL
+const VERCEL_URL = "https://mlbb-counter-api-five.vercel.app"; 
+
+// BASE DE DATOS LOCAL INICIAL / RESPALDO DE HÉROES
+let HERO_DATABASE = [
+  "Aamon", "Akai", "Aldous", "Alice", "Alpha", "Alucard", "Angela", "Argus", "Arlott", "Atlas", "Aurora",
+  "Badang", "Balmond", "Barats", "Baxia", "Beatrix", "Belerick", "Benedetta", "Brody", "Bruno",
+  "Carmilla", "Cecilion", "Chang'e", "Chip", "Chou", "Cici", "Claude", "Clint", "Cyclops",
+  "Diggie", "Dyrroth", "Edith", "Esmeralda", "Estes", "Eudora", "Faramis", "Fanny", "Floryn", "Franco", "Fredrinn", "Freya",
+  "Gatotkaca", "Gloom", "Gord", "Grock", "Gusion", "Hanabi", "Hanzo", "Harith", "Harley", "Hayabusa", "Helcurt", "Hilda", "Hirara", "Hylos",
+  "Irithel", "Ixia", "Johnson", "Joy", "Julian", "Kadita", "Kagura", "Kaja", "Karina", "Karrie", "Khaleed", "Khufra", "Kimmy",
+  "Lancelot", "Lapu-Lapu", "Layla", "Leomord", "Lesley", "Ling", "Lolita", "Lunox", "Lylia",
+  "Martis", "Masha", "Mathilda", "Melissa", "Miya", "Minotauro", "Minotaur", "Minsitthar", "Moskov",
+  "Nana", "Natan", "Nolan", "Novaria", "Odette", "Paquito", "Pharsa", "Phoveus", "Popol and Kupa",
+  "Rafaela", "Ruby", "Saber", "Selena", "Sun", "Suyou", "Terizla", "Thamuz", "Tigreal",
+  "Uranus", "Vale", "Valir", "Valentina", "Vexana", "Wanwan", "Xavier", "X.Borg", "Yin", "Yi Sun-shin", "Yu Zhong", "Yve", "Zhask", "Zhuxin", "Zilong"
 ];
+
+/**
+ * Función que obtiene la lista completa de héroes directamente de MLBB Hub vía el backend
+ */
+async function cargarHeroesDinamicos() {
+  try {
+    const res = await fetch(`${VERCEL_URL}/?getHeroes=true`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.heroes && data.heroes.length > 0) {
+        HERO_DATABASE = data.heroes;
+        console.log(`Base de datos actualizada con ${HERO_DATABASE.length} héroes desde MLBB Hub.`);
+      }
+    }
+  } catch (err) {
+    console.warn("No se pudo cargar la lista dinámica, usando base local:", err.message);
+  }
+}
 
 // DICCIONARIO DE LÍNEAS HABITUALES
 const HERO_LANES = {
@@ -296,21 +315,21 @@ const HERO_LANES = {
     "Cici", "Lukas", "Suyu", "Suyou", "Alice", "Bane", "Gatotkaca"
   ],
   mid: [
-    "Alice", "Nana", "Eudora", "Gord", "Kagura", "Cyclops", "Aurora", "Vexana", "Odette", "Pharsa",
+    "Faramis", "Alice", "Nana", "Eudora", "Gord", "Kagura", "Cyclops", "Aurora", "Vexana", "Odette", "Pharsa",
     "Valir", "Chang'e", "Vale", "Lunox", "Harith", "Lylia", "Cecilion", "Luo Yi", "Yve", "Valentina",
     "Xavier", "Novaria", "Zhuxin", "Julian", "Zhask", "Kadita"
   ],
   gold: [
-    "Miya", "Bruno", "Clint", "Layla", "Moscov", "Irithel", "Lesley", "Hanabi", "Claude", "Kimmy",
+    "Miya", "Bruno", "Clint", "Layla", "Moskov", "Moscov", "Irithel", "Lesley", "Hanabi", "Claude", "Kimmy",
     "Granger", "Wanwan", "Brody", "Natan", "Melissa", "Ixia", "Popol and Kupa", "Harith", "Lunox", "Alice", "Beatrix"
   ],
   jungle: [
-    "Saber", "Alucard", "Fanny", "Hayabusa", "Freya", "Yi Sun-shin", "Harley", "Lancelot", "Helcurt",
+    "Hirara", "Saber", "Alucard", "Fanny", "Hayabusa", "Freya", "Yi Sun-shin", "Harley", "Lancelot", "Helcurt",
     "Gusion", "Hanzo", "Ling", "Baxia", "Aamon", "Nolan", "Barats", "Martis", "Alpha", "Julian",
-    "Balmond", "Bane", "Jawhead", "Paquito", "Fredrinn", "Dyrroth", "Gloo", "Chou", "Popol and Kupa", "Karina"
+    "Balmond", "Bane", "Jawhead", "Paquito", "Fredrinn", "Dyrroth", "Gloo", "Chou", "Popol and Kupa", "Karina", "Suyou"
   ],
   roam: [
-    "Tigreal", "Akai", "Franco", "Rafaela", "Minotauro", "Minotaur", "Lolita", "Natalia", "Johnson", "Estes",
+    "Faramis", "Tigreal", "Akai", "Franco", "Rafaela", "Minotauro", "Minotaur", "Lolita", "Natalia", "Johnson", "Estes",
     "Grock", "Diggie", "Hylos", "Angela", "Kaja", "Selena", "Belerick", "Khufra", "Carmilla",
     "Atlas", "Mathilda", "Chip", "Chou", "Jawhead", "Edith", "Minsitthar", "Hilda", "Valir", "Gatotkaca", "Kadita", "Marcel"
   ]
@@ -441,7 +460,8 @@ function identificarHeroe(entrada) {
     }
   });
 
-  return menorDistancia <= 3 ? mejorCoincidencia : entrada;
+  // Umbral máximo de 2 diferencias para considerar autocorregir
+  return menorDistancia <= 2 ? mejorCoincidencia : entrada;
 }
 
 function esHeroeDeLinea(nombreHeroe, linea) {
@@ -461,8 +481,6 @@ async function buscarCounter() {
 
   const enemigoFinal = identificarHeroe(inputEnemigo);
   const pool = userPool[linea] || [];
-  
-  const VERCEL_URL = "https://mlbb-counter-api-five.vercel.app"; 
 
   document.getElementById('poolResult').innerHTML = "<p style='color:var(--muted); font-size:0.85rem;'>Analizando matchup...</p>";
   document.getElementById('generalResult').innerHTML = "<p style='color:var(--accent); font-size:0.9rem;'>Consultando counters en vivo en MLBB Hub...</p>";
@@ -480,7 +498,6 @@ async function buscarCounter() {
 
     // --- BLOQUE 2: MEJOR OPCIÓN GENERAL ---
     if (apiCounters.length > 0) {
-      // Priorizar los de la línea elegida, pero si hay pocos, incluir el resto
       const countersFiltradosPorLinea = apiCounters.filter(c => esHeroeDeLinea(c.name, linea));
       const listaFinal = countersFiltradosPorLinea.length >= 3 ? countersFiltradosPorLinea : apiCounters;
 
@@ -547,7 +564,9 @@ function reiniciarBusqueda() {
   document.getElementById('resultadosCounter').style.display = "none";
 }
 
+// Inicializar la interfaz y cargar la base de datos dinámica al abrir
 mostrarPoolActual();
+cargarHeroesDinamicos();
 </script>
 
 </body>
