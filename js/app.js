@@ -40,12 +40,12 @@ function renderPool() {
   const lane = elements.poolLane.value;
   const heroes = userPool[lane] || [];
   if (heroes.length === 0) {
-    elements.poolTags.innerHTML = `<span class="empty-msg">${text.emptyPool}</span>`;
+    elements.poolTags.innerHTML = `<span class="empty-msg pool-empty">${text.emptyPool}</span>`;
     return;
   }
 
   elements.poolTags.innerHTML = heroes.map((hero, index) => `
-    <div class="tag">${escapeHtml(hero)}
+    <div class="tag"><span class="tag-name">${escapeHtml(hero)}</span>
       <button class="tag-remove" type="button" data-remove-index="${index}" aria-label="Eliminar ${escapeHtml(hero)}">&times;</button>
     </div>`).join("");
 }
